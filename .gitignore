@@ -1,1 +1,4 @@
-../4d_modexample/.gitignore
+.vs/
+x64/
+update4dmh_push.bat
+.git/
