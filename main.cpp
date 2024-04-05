@@ -1,7 +1,3 @@
-
-#define MOD_NAME "4D UUID obfuscator"
-#define MOD_VER "1.1"
-
 #include <4dm.h>
 #include <openssl/evp.h>
 using namespace fdm;
@@ -57,44 +53,22 @@ void updateUUID() {
 	return updateGame(mp,uuidstr,uuidlbl,uuid_hidden);
 }
 
-void(__thiscall* stateMultiplayer_joinButtonCallback)(void* self);
-void stateMultiplayer_joinButtonCallback_H(void* _nullptr) {
-	stateMultiplayer_joinButtonCallback(_nullptr);
+$hook(void, StateMultiplayer, joinButtonCallback) {
+	original(self);
 	updateUUID();
 }
 
-void(__thiscall* stateMultiplayer_keyInput)(StateMultiplayer* self, StateManager& s, int key, int scancode, int action, int mods);
-void stateMultiplayer_keyInput_H(StateMultiplayer* self, StateManager& s, int key, int scancode, int action, int mods) {
-	stateMultiplayer_keyInput(self,s,key,scancode,action,mods);
+$hook(void, StateMultiplayer, keyInput, StateManager& s, int key, int scancode, int action, int mods ) {
+	original(self,s,key,scancode,action,mods);
 	updateUUID();
 }
 
-void(__thiscall* stateMultiplayer_init)(StateMultiplayer* self, StateManager& s, uint32_t codepoint);
-void stateMultiplayer_init_H(StateMultiplayer* self, StateManager& s, uint32_t codepoint) {
-	stateMultiplayer_init(self,s,codepoint);
+$hook(void, StateMultiplayer, init, StateManager& s, uint32_t codepoint) {
+	original(self,s,codepoint);
 	updateUUID();
 }
 
-void(__thiscall* stateMultiplayer_update)(StateMultiplayer* self, StateManager& s, double dt);
-void stateMultiplayer_update_H(StateMultiplayer* self, StateManager& s, double dt) {
-	stateMultiplayer_update(self,s,dt);
+$hook(void, StateMultiplayer, update, StateManager& s, double dt) {
+	original(self,s,dt);
 	updateUUID();
-}
-
-
-DWORD WINAPI Main_Thread(void* hModule) {
-	
-	Hook( FUNC_STATEMULTIPLAYER_JOINBUTTONCALLBACK, &stateMultiplayer_joinButtonCallback_H, &stateMultiplayer_joinButtonCallback );
-	Hook( FUNC_STATEMULTIPLAYER_KEYINPUT, &stateMultiplayer_keyInput_H, &stateMultiplayer_keyInput );
-	Hook( FUNC_STATEMULTIPLAYER_INIT, &stateMultiplayer_init_H, &stateMultiplayer_init );
-	Hook( FUNC_STATEMULTIPLAYER_UPDATE, &stateMultiplayer_update_H, &stateMultiplayer_update );
-	
-	EnableHook(nullptr);
-	return true;
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD _reason, LPVOID lpReserved) {
-	if (_reason == DLL_PROCESS_ATTACH)
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Main_Thread, hModule, 0, NULL);
-	return true;
 }

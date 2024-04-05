@@ -1,0 +1,11 @@
+{
+  id: "redjard.uuid_obfuscator",
+  name: "4D UUID obfuscator",
+  author: "Redjard",
+  description: "This mod changes the UUID based on the server address, so the owner of a server doesn't see your true UUID and can't steal your accounts.",
+  version: "1.2",
+  gameVersion: "0.2.1.4",
+  modDLL: "4D UUID obfuscator.dll",
+  externalDLLs: [],
+  dependencies: {},
+}
